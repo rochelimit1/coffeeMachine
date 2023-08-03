@@ -46,25 +46,48 @@ public class CoffeeMachine {
 
         boolean isRun = true;
         while(isRun) {
-            int answer = 사용자입력받기("1. 구매 2. 채우기 3. 가져가기 > ");
+            int answer = 사용자입력받기("1. 구매 2. 채우기 3. 가져가기 4.종료 > ");
 
             switch (answer) {
                 case 1 -> buy();
                 case 2 -> fill();
                 case 3 -> take();
+                case 4 -> exit();
             }
 
         }
     }
 
     private void buy() {
+        int coffeeNumber = 사용자입력받기("어떤 커피를 사시겠어요? 1. 에스프레소  2. 라떼  3. 카푸치노");
+        switch (coffeeNumber) {
+            case 1 -> makeCoffee(new Cappuccino());
+            case 2 -> makeCoffee(new Latte());
+            case 3 -> makeCoffee(new Espresso());
+
+
+        }
+    }
+
+    private void makeCoffee(Coffee coffee) {
+
+        try {
+            this.water.removeAmount(coffee.needWater);
+        } catch (InsufficientException e) {
+            System.out.println(e.getMessage());
+        }
+
+        this.money.addAmount(coffee.price);
+
 
     }
 
     private void fill() {
-
+        int 추가 = 사용자입력받기("추가할 물의 양을 입력하세요 >");
+//        while (false) {
+//
+//        }
     }
-
     private void take() {
         int 꺼낼돈 = 사용자입력받기("얼마를 꺼내시겠어요? > ");
         try {
@@ -74,6 +97,12 @@ public class CoffeeMachine {
         } catch (InsufficientException e) {
             System.out.println("있는 돈보다 더 꺼내시면 안되요.");
         }
+    }
+
+    private void exit() {
+        System.out.println("커피머신이 종료되었습니다.");
+        System.exit(0);
+
     }
 
     int 사용자입력받기(String message) {
@@ -170,14 +199,19 @@ abstract class Coffee {
     int price;
 }
 
-class latte extends Coffee {
+class Latte extends Coffee {
+    public Latte() {
+        this.needWater = 350;
+        this.needMilk = 75;
+        this.needCoffeeBean = 20;
+        this.price = 7000;
+    }
+}
+
+class Cappuccino extends Coffee {
 
 }
 
-class cappuccino extends Coffee {
-
-}
-
-class espresso extends Coffee {
+class Espresso extends Coffee {
 
 }
