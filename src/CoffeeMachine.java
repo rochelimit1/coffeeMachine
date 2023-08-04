@@ -58,35 +58,63 @@ public class CoffeeMachine {
         }
     }
 
-    private void buy() {
+    private void buy()  {
         int coffeeNumber = 사용자입력받기("어떤 커피를 사시겠어요? 1. 에스프레소  2. 라떼  3. 카푸치노");
         switch (coffeeNumber) {
-            case 1 -> makeCoffee(new Cappuccino());
-            case 2 -> makeCoffee(new Latte());
-            case 3 -> makeCoffee(new Espresso());
-
-
+            case 1 -> {
+                makeCoffee(new Espresso());
+                break;
+            }
+            case 2 -> {
+                makeCoffee(new Latte());
+                break;
+            }
+            case 3 -> {
+                makeCoffee(new Cappuccino());
+                break;
+            }
+            default -> System.out.println("잘못된 선택입니다.");
         }
+
+        System.out.println("남은 재료와 돈 상태:");
+        재료출력();
+
+
     }
 
-    private void makeCoffee(Coffee coffee) {
+    private void makeCoffee(Coffee coffee){
+        int neededWater = coffee.needWater;
+        int neededMilk = coffee.needMilk;
+        int neededCoffeeBeans = coffee.needCoffeeBean;
+        int price = coffee.price;
+
 
         try {
-            this.water.removeAmount(coffee.needWater);
-        } catch (InsufficientException e) {
-            System.out.println(e.getMessage());
+            this.water.removeAmount(neededWater);
+            this.milk.removeAmount(neededMilk);
+            this.coffeeBean.removeAmount(neededCoffeeBeans);
+            this.cup.removeAmount(1);
         }
-
-        this.money.addAmount(coffee.price);
-
-
+        catch (InsufficientException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        this.money.addAmount(price);
+        System.out.println(coffee.getClass().getSimpleName());
+        System.out.println("커피 맛있게 드세요");
     }
 
     private void fill() {
-        int 추가 = 사용자입력받기("추가할 물의 양을 입력하세요 >");
-//        while (false) {
-//
-//        }
+        int 추가할물 = 사용자입력받기("추가할 물의 양을 입력하세요 >");
+        int 추가할우유 = 사용자입력받기("추가할 우유의 양을 입력하세요: ");
+        int 추가할원두 = 사용자입력받기("추가할 원두의 양을 입력하세요: ");
+        int 추가할컵 = 사용자입력받기("추가할 일회용 컵의 양을 입력하세요: ");
+        this.water.addAmount(추가할물);
+        this.milk.addAmount(추가할우유);
+        this.coffeeBean.addAmount(추가할원두);
+        this.cup.addAmount(추가할컵);
+        System.out.println("남은 재료와 돈 상태:");
+        재료출력();
     }
     private void take() {
         int 꺼낼돈 = 사용자입력받기("얼마를 꺼내시겠어요? > ");
@@ -120,7 +148,7 @@ public class CoffeeMachine {
     };
 
     // 실행 메소드
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InsufficientException {
         CoffeeMachine coffeeMachine = new CoffeeMachine(new Water(400),
                 new Milk(540), new CoffeeBean(120),
                 new Cup(9), new Money(50000));
@@ -209,9 +237,21 @@ class Latte extends Coffee {
 }
 
 class Cappuccino extends Coffee {
+    public Cappuccino() {
+        this.needWater = 200;
+        this.needMilk = 100;
+        this.needCoffeeBean = 12;
+        this.price = 6000;
+    }
 
 }
 
 class Espresso extends Coffee {
+    public Espresso() {
+        this.needWater = 250;
+        this.needMilk = 0;
+        this.needCoffeeBean = 16;
+        this.price = 4000;
+    }
 
 }
